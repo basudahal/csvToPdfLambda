@@ -1,0 +1,7 @@
+service: s3-lambda-csv-to-pdf-s3
+provider:
+  name: aws
+  runtime: nodejs12.x
+functions:
+  csv2pdf:
+    handler: index.handler
