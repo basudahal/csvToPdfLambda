@@ -1,3 +1,5 @@
+import jenkins.model.*
+
 pipeline {
     agent any
     environment {
@@ -16,6 +18,7 @@ pipeline {
         stage('Prepare') {
             steps {
                     //buildName "${params.dev_tag}-${params.environment}"
+                    //BUILD_DISPLAY_NAME "${params.dev_tag}-${params.environment}-${params.region}"
                     sh "git checkout ${params.dev_tag}"
                     script {
                       deployCommand = "serverless deploy"
@@ -26,8 +29,6 @@ pipeline {
         stage('Run NPM install') {
           steps {
             sh "npm install"
-            sh "chown -R /usr/local/lib/node_modules"
-            sh "npm i -g serverless"
           }
         }
         stage('Deploy') {
@@ -38,6 +39,13 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+    post {
+        always {
+            deleteDir()
+            cleanWs()
+            echo 'Done'
         }
     }
 }
