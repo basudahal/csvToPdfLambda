@@ -34,16 +34,6 @@ pipeline {
     }
     stage('Deploy') {
       steps {
-        script {
-          env.AWS_ACCESS_KEY_ID = ''
-          env.AWS_SECRET_ACCESS_KEY = ''
-          withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${deploymentCredentialId}", accessKeyVariable:'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-            def assume_result = sh returnStdout:true, script: "aws sts assume-role --role-arn arn:aws:iam::${deployAccount}:role/${deploymentRole} --role-session-name ${projectName}-deploy"
-            def assume_object = Json.parse(assume_result)
-            env.AWS_ACCESS_KEY_ID = assume_object.Credentials.AccessKeyId
-            env.AWS_SECRET_ACCESS_KEY = assume_object.Credentials.SecretAccessKey
-          }
-        }
         sh deployCommand
       }
     }
